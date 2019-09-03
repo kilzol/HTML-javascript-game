@@ -1,0 +1,112 @@
+<html>
+    <canvas id="gamecanvas" width="800" height="600"></canvas>
+<script>
+    var canvas;
+    var canvascontext;
+    var ballx=50;
+    var bally=50;
+var ballspeedx =10;
+var ballspeedy=4;
+
+var paddle1y=250;
+var paddle2y=250;
+const PADDLE_HEIGHT =100;//Capital so we know it is const
+
+function calmousepos(evt){
+    var rect = canvas.getBoundingClientRect();
+    var root=document.documentElement;
+    var mousex= evt.clientX-rect.left-root.scrollleft;
+    var mousey= evt.clientY-rect.top - root.scrollTop;
+   
+        return{
+            x: mousex,
+      y:mousey
+        };
+    }
+
+    window.onload =function(){
+console.log("Hello World!");
+canvas = document.getElementById('gamecanvas');
+canvascontext =canvas.getContext('2d');
+var framepersecond = 30;
+setInterval(function() {
+    move();   //inline function calling stand alone function
+draw();
+
+},1000/framepersecond);
+canvas.addEventListener('mousemove',function(evt){
+    var mousePos = calmousepos(evt);
+    console.log(mousePos.y);
+    paddle1y = mousePos.y-(PADDLE_HEIGHT/2);
+    paddle2y = mousePos.y -(PADDLE_HEIGHT/2);
+});
+    }
+
+
+function ballReset(){
+    ballspeedx = -ballspeedx;
+ballx=canvas.width/2;
+bally=canvas.height/2;
+
+}
+
+function move()
+{
+    ballx = ballx + ballspeedx;
+    bally=bally+ballspeedy
+    if(ballx > canvas.width){
+        if(bally>paddle1y && bally<(paddle1y+PADDLE_HEIGHT)){
+ballspeedx = -ballspeedx;
+}else
+  ballReset();
+    }
+  
+    if(ballx < 0)
+    { 
+if(bally>paddle1y && bally<(paddle1y+PADDLE_HEIGHT)){
+ballspeedx = -ballspeedx;
+}else
+ballReset();
+    }
+    if(bally<0)
+{
+    ballspeedy=-ballspeedy;
+}  if(bally>canvas.height){
+
+ballspeedy=-ballspeedy;
+}  
+
+}
+
+
+function draw(){
+    //black screen
+    colorRect(0,0,canvas.width,canvas.height,'black');
+
+  //this is the left paddle
+  colorRect(0,paddle1y,20,PADDLE_HEIGHT,'white');
+
+
+   //this is the right paddle
+   colorRect(780,paddle2y,20,PADDLE_HEIGHT,'white');
+
+ 
+  //to draw the ball
+  colourball(ballx,bally,10,'white');
+
+}
+function colourball(centerx,centery,radius,drawcolour){
+    canvascontext.fillStyle=drawcolour;
+  canvascontext.beginPath();
+  canvascontext.arc(centerx,centery,radius,0,Math.PI*2,true); //(x,y(centre of circle),radiusof circle,angle ,radian-2PI,clockwise-true/false-anticlockwise)
+  canvascontext.fill();
+}
+function colorRect(leftx,topy,width,height, drawcolor)
+{
+    canvascontext.fillStyle = drawcolor;
+canvascontext.fillRect(leftx,topy,width,height);
+
+}
+
+    </script>
+ </html>
